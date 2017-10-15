@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <div id="container">
+      <section id="memo">
+
+        <div class="left">
+          <div class="color1 padding">
+            <div class="company-info">
+              <div class="name">{{.From | GetHTML}}</div>
+              <br>
+              <div>{{.FromInfo | GetHTML}}</div>
+            </div>
+          </div>
+
+          <div id="invoice-info">
+            <div class="color1">
+              <label>{{.CurrencyTitle | GetHTML}}</label>
+              <span>{{.Currency | GetHTML}}</span>
+            </div>
+            
+            <div class="color2">
+              <label>{{.DueDateTitle | GetHTML}}</label>
+              <span>{{.DueDate | GetHTML}}</span>
+            </div>
+
+            <div class="color3">
+                <label>{{.PaymentTermsTitle | GetHTML}}</label>
+                <span>{{.PaymentTerms | GetHTML}}</span>
+              </div>
+          </div>
+        </div>
+
+        <div class="right">
+          <div {{if ne .Logo ""}} class="top-space" {{else}} class="hidden" {{end}}></div>
+
+          <div {{if ne .Logo ""}} class="logo" {{else}} class="hidden" {{end}}>
+            <img />
+          </div>
+
+          <div class="clearfix"></div>
+
+          <section id="client-info">
+            <span>{{.ToTitle}}</span>
+            <div>
+              <b><span>{{.To}}</span></b>
+            </div>
+            
+            <div>
+              <span>{{.ToInfo | GetHTML}}</span>
+            </div>
+          </section>
+        </div>
+
+      </section>
+
+      <div class="clearfix"></div>
+      
+      <section id="invoice-title-number">
+      
+        <span id="title">{{.Header}}</span>
+        <span id="number">{{.Number}}</span>
+        
+      </section>
+      
+      <div class="clearfix"></div>
+
+      <section id="issue_date">
+        <span>{{.DateTitle}}</span>
+        <span>{{.Date}}</span>
+      </section>
+
+      <div class="clearfix"></div>
+      
+      <section id="items">
+        
+        <table cellpadding="0" cellspacing="0">
+        
+          <tr>
+            <th></th>
+            <th>{{.ItemHeader}}</th>
+            <th>{{.QuantityHeader}}</th>
+            <th>{{.UnitCostHeader}}</th>
+            <th>{{.AmountHeader}}</th>
+          </tr>
+
+          {{ $currency := .Currency }}
+          {{range $i, $item := .Items}}
+            {{ $itemTotal := GetItemTotal $item.Quantity $item.UnitCost}}
+            <tr>
+              <td>{{GetItemIndex $i}}</td>
+              <td>{{$item.Name}}</td>
+              <td>{{$item.Quantity}}</td>
+              <td>{{FormatMoney $currency $item.UnitCost}}</td>
+              <td>{{FormatMoney $currency $itemTotal}}</td>
+            </tr>
+          {{end}}
+          
+        </table>
+        
+      </section>
+      
+      <section id="sums">
+      
+        <table cellpadding="0" cellspacing="0">
+          <tr>
+            <th>{{.SubtotalTitle}}</th>
+            <td>{{.Calculations.Subtotal | FormatMoney .Currency}}</td>
+          </tr>
+          
+          <tr>
+            <th>{{.TaxTitle}}</th>
+            <td>
+                <span {{if eq .Fields.Tax "%"}} class="tax-percentage" {{else}} class="hidden" {{end}}>
+                ({{.Tax | FormatNumber | FormatPercentage .Fields.Tax}})
+              </span>
+              {{.Calculations.Tax | FormatMoney .Currency}}
+            </td>
+          </tr>
+
+          <tr>
+            <th>{{.DiscountsTitle}}</th>
+            <td>
+              <span {{if eq .Fields.Discount "%"}} class="tax-percentage" {{else}} class="hidden" {{end}}>
+                ({{.Discount | FormatNumber | FormatPercentage .Fields.Discount}})
+              </span>
+              {{.Calculations.Discount | FormatMoney .Currency}}
+            </td>
+          </tr>
+
+          <tr>
+            <th>{{.ShippingTitle}}</th>
+            <td>
+              <span {{if eq .Fields.Shipping "%"}} class="tax-percentage" {{else}} class="hidden" {{end}}>
+                ({{.Shipping | FormatNumber | FormatPercentage .Fields.Shipping}})
+              </span>
+              {{.Calculations.Shipping | FormatMoney .Currency}}
+            </td>
+          </tr>
+          
+          <tr class="amount-total">
+            <th>{{.TotalTitle}}</th>
+            <td>{{.Calculations.Total | FormatMoney .Currency}}</td>
+          </tr>
+          
+          <tr>
+            <th>{{.AmountPaidTitle}}</th>
+            <td>{{.AmountPaid | FormatMoney .Currency}}</td>
+          </tr>
+          
+          <tr>
+            <th>{{.BalanceTitle}}</th>
+            <td>{{.Calculations.Balance | FormatMoney .Currency}}</td>
+          </tr>
+          
+        </table>
+        
+      </section>
+      
+      <div class="clearfix"></div>
+      
+      <section id="terms">
+      
+        <span class="hidden">{{.TermsTitle}}</span>
+        <div>{{.TermsTitle}}: {{.Terms | GetHTML}}</div>
+        
+      </section>
+
+      <div class="payment-info">
+        <div>{{.NotesTitle}}: {{.Notes | GetHTML}}</div>
+      </div>
+
+      <div class="bottom-stripe">
+        <div class="color1-bottom"></div>
+        <div class="color2-bottom"></div>
+        <div class="color3-bottom"></div>
+      </div>
+
+    </div>
+  </body>
+  <style>
+    /* Reset styles */
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td,
+    article, aside, canvas, details, embed,
+    figure, figcaption, footer, header, hgroup,
+    menu, nav, output, ruby, section, summary,
+    time, mark, audio, video {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font: inherit;
+      font-size: 100%;
+      vertical-align: baseline;
+    }
+
+    html {
+      line-height: 1;
+    }
+
+    ol, ul {
+      list-style: none;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    caption, th, td {
+      text-align: left;
+      font-weight: normal;
+      vertical-align: middle;
+    }
+
+    q, blockquote {
+      quotes: none;
+    }
+    q:before, q:after, blockquote:before, blockquote:after {
+      content: "";
+      content: none;
+    }
+
+    a img {
+      border: none;
+    }
+
+    article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
+      display: block;
+    }
+
+    /* Invoice styles */
+    /**
+    * DON'T override any styles for the <html> and <body> tags, as this may break the layout.
+    * Instead wrap everything in one main <div id="container"> element where you may change
+    * something like the font or the background of the invoice
+    */
+    html, body {
+      /* MOVE ALONG, NOTHING TO CHANGE HERE! */
+    }
+
+    /** 
+    * IMPORTANT NOTICE: DON'T USE '!important' otherwise this may lead to broken print layout.
+    * Some browsers may require '!important' in oder to work properly but be careful with it.
+    */
+    .clearfix {
+      display: block;
+      clear: both;
+    }
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #container {
+      font-style: normal;
+      font-variant-ligatures: normal;
+      font-variant-caps: normal;
+      font-variant-numeric: normal;
+      font-weight: normal;
+      font-stretch: normal;
+      font-size: 13px;
+      line-height: 1.4em;
+      font-family: "Open Sans", sans-serif;
+      margin: 0 auto;
+      padding: 0 50px 20px 50px;
+      min-height: 1138px;
+      position: relative;
+      color: #231F20;
+    }
+
+    .left {
+      float: left;
+    }
+
+    .right {
+      float: right;
+    }
+
+    #memo .color1, #memo .color2, #memo .color3 {
+      color: white;
+      max-width: 450px;
+      padding: 7px 35px;
+    }
+    #memo .color1 {
+      background: #335C64;
+    }
+    #memo .color1.padding {
+      padding-top: 35px;
+      padding-bottom: 10px;
+    }
+    #memo .color2 {
+      background: #0A3542;
+    }
+    #memo .color3 {
+      background: #7894A3;
+    }
+    #memo .company-info .name {
+      font-weight: bold;
+      font-size: 20px;
+    }
+    #memo .company-info div {
+      margin-bottom: 3px;
+    }
+    #memo .top-space {
+      height: 35px;
+    }
+    #memo .logo {
+      float: right;
+      margin-left: 30px;
+    }
+    #memo .logo img {
+      width: 150px;
+      height: 100px;
+    }
+    #memo:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+
+    #invoice-info > div > label {
+      min-width: 40px;
+      max-width: 140px;
+      float: left;
+      min-height: 18px;
+    }
+    #invoice-info > div > span {
+      min-width: 40px;
+      max-width: 140px;
+      display: block;
+      float: right;
+      text-align: right;
+      min-height: 18px;
+    }
+    #invoice-info > div:after {
+      content: '';
+      display: block;
+      clear: both;
+      margin-bottom: 3px;
+    }
+
+    #client-info {
+      margin-top: 20px;
+      min-width: 250px;
+      text-align: right;
+    }
+    #client-info > div {
+      margin-bottom: 3px;
+    }
+    #client-info span {
+      display: block;
+    }
+    #client-info > span {
+      margin-bottom: 10px;
+    }
+
+    #invoice-title-number {
+      font-size: 40px;
+      margin: 70px 0 20px 35px;
+      float: left;
+      color: #7894A3;
+    }
+    #invoice-title-number #title {
+      margin-right: 5px;
+    }
+    #invoice-title-number #number {
+      margin-left: 5px;
+    }
+
+    #issue_date {
+      color: #989898;
+      float: left;
+      margin: 0 0 40px 35px;
+    }
+
+    table {
+      table-layout: fixed;
+    }
+    table th, table td {
+      vertical-align: top;
+      word-break: keep-all;
+      word-wrap: break-word;
+    }
+
+    #items .first-cell, #items table th:first-child, #items table td:first-child {
+      width: 40px;
+      text-align: right;
+    }
+    #items table {
+      border-collapse: separate;
+      width: 100%;
+      border-bottom: 1px solid #7894A3;
+    }
+    #items table th {
+      font-weight: bold;
+      color: #231F20;
+      padding: 12px 10px;
+      text-align: right;
+      border-bottom: 3px solid #7894A3;
+    }
+    #items table th:nth-child(2) {
+      width: 30%;
+      text-align: left;
+    }
+    #items table th:last-child {
+      text-align: right;
+    }
+    #items table td {
+      padding: 15px 10px;
+      text-align: right;
+    }
+    #items table td:first-child {
+      text-align: left;
+    }
+    #items table td:nth-child(2) {
+      text-align: left;
+    }
+
+    #sums {
+      float: right;
+      margin-top: 30px;
+      page-break-inside: avoid;
+    }
+    #sums table {
+      text-transform: uppercase;
+    }
+    #sums table tr th, #sums table tr td {
+      min-width: 100px;
+      padding: 10px;
+      text-align: right;
+    }
+    #sums table tr th {
+      text-align: left;
+      padding-right: 25px;
+    }
+    #sums table tr.amount-total {
+      font-size: 16px;
+    }
+    #sums table tr.amount-total th {
+      color: #7894A3;
+    }
+    #sums table tr.amount-total th, #sums table tr.amount-total td {
+      font-weight: bold;
+      border-top: 3px solid #7894A3;
+    }
+    #sums table tr:last-child {
+      font-size: 16px;
+    }
+    #sums table tr:last-child th {
+      color: #7894A3;
+    }
+    #sums table tr:last-child th, #sums table tr:last-child td {
+      font-weight: bold;
+    }
+
+    #terms {
+      margin: 70px 0 10px 0;
+      font-size: 14px;
+      page-break-inside: avoid;
+    }
+    #terms > div {
+      color: #989898;
+      text-align: center;
+      min-height: 70px;
+    }
+
+    .payment-info {
+      color: #989898;
+      text-align: center;
+    }
+    .payment-info div {
+      display: inline-block;
+      min-width: 10px;
+    }
+
+    .bottom-stripe {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+    }
+    .bottom-stripe div {
+      height: 10px;
+      float: left;
+    }
+    .bottom-stripe .color1-bottom {
+      background: #335C64;
+      width: 33%;
+    }
+    .bottom-stripe .color2-bottom {
+      background: #0A3542;
+      width: 33%;
+    }
+    .bottom-stripe .color3-bottom {
+      background: #7894A3;
+      width: 34%;
+    }
+    .tax-percentage {
+      font-size: 12px;
+      color: #999;
+      margin-right: 5px;
+    }
+  </style>
+</html>
