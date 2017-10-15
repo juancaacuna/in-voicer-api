@@ -23,6 +23,7 @@ $ export INVOICER_EMAIL_PASSWORD=putemailsenderpasswordhere
 $ export INVOICER_TEMPLATES_PATH=$GOPATH/src/github.com/juancaacuna/in-voicer-api/invoicer/templates
 ```
 And update email information on `email.go`.
+
 4. 
 ```bash
 $ go run *.go
