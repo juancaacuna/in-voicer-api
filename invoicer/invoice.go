@@ -12,7 +12,7 @@ func CreateInvoices(invoices *[]Invoice) {
 }
 
 func SendInvoice(invoice *Invoice) {
-	parsedHtmlInvoice, err := parseTemplateToString("$INVOICER_TEMPLATES_PATH/template_invoice_01.html", &invoice)
+	parsedHtmlInvoice, err := parseTemplateToString("/invoicer/templates/template_invoice_01.html", &invoice)
 	if (err == nil) {
 		pdfFileContent := getPDFContent(&parsedHtmlInvoice)
 		attachmentName := "invoice.pdf"

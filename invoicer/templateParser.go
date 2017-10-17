@@ -39,18 +39,15 @@ func parseTemplateToString(templateName string, data interface{}) (string, error
 	templatePaths := strings.Split(templateName, "/")
 	t, err := template.New(templatePaths[len(templatePaths)-1]).Funcs(funcMap).ParseFiles(filepath.Join( root, templateName ))
 	if (err != nil) {
-		fmt.Println("ParseFiles", err)
 		return "", err
 	}
 	var tpl bytes.Buffer
 	if err := t.Execute(&tpl, data); err != nil {
-		fmt.Println("Execute", err)
 		return "", err
 	}
 	parsedHtml := tpl.String()
 	inlinedHtml, err := inliner.Inline(parsedHtml)
 	if err != nil {
-		fmt.Println("Inline", err)
 		return "", err
 	}
 	return inlinedHtml, nil

@@ -8,7 +8,7 @@ package main
 // @LicenseUrl http://opensource.org/licenses/BSD-2-Clause
 
 import (
-    "in-voicer/invoicer"
+    "in-voicer-api/invoicer"
 	"github.com/gorilla/mux"
     "log"
     "net/http"
@@ -16,6 +16,9 @@ import (
 )
 
 func main() {
+    os.Setenv("HTTP_PLATFORM_PORT", "8000")
+    os.Setenv("INVOICER_EMAIL_PASSWORD", "putpasswordhere")
+
     router := mux.NewRouter()
     api := router.PathPrefix("/api").PathPrefix("/v1").Subrouter()
     api.HandleFunc("/invoices", invoicer.GetInvoices).Methods("GET")

@@ -81,7 +81,7 @@ func SendEmail(emailInfo *EmailInfo, attachment *email.Attachment) error {
 		emailInfo.FromName,
 		template.HTML(emailInfo.Message),
 	}
-	parsedHtmlEmailBody, err := parseTemplateToString("$INVOICER_TEMPLATES_PATH/template_email.html", data)
+	parsedHtmlEmailBody, err := parseTemplateToString("/invoicer/templates/template_email.html", data)
 
 	// STEP 2 - Send email
 	if (err == nil) {
