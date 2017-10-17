@@ -23,7 +23,9 @@ $ export INVOICER_EMAIL_PASSWORD=putemailsenderpasswordhere
 ```
 And update email information on `email.go`, like sender email, host and port.
 
-4. 
+4. Download [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html).
+
+5. Run the in-voicer-api :)
 ```bash
 $ go run *.go
 ```
