@@ -16,12 +16,11 @@ import (
 )
 
 func main() {
-    os.Setenv("HTTP_PLATFORM_PORT", "8000")
     os.Setenv("INVOICER_EMAIL_PASSWORD", "putpasswordhere")
 
     router := mux.NewRouter()
     api := router.PathPrefix("/api").PathPrefix("/v1").Subrouter()
     api.HandleFunc("/invoices", invoicer.GetInvoices).Methods("GET")
     api.HandleFunc("/send", invoicer.CreateAndSendInvoices).Methods("POST")
-    log.Fatal(http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), router))
+    log.Fatal(http.ListenAndServe(":" + os.Getenv("PORT"), router))
 }
