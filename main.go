@@ -8,7 +8,7 @@ package main
 // @LicenseUrl http://opensource.org/licenses/BSD-2-Clause
 
 import (
-    "in-voicer-api/invoicer"
+    "github.com/juancaacuna/in-voicer-api/invoicer"
 	"github.com/gorilla/mux"
     "log"
     "net/http"
